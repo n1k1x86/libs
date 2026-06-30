@@ -8,6 +8,11 @@ import (
 type Server interface {
 	Start() error
 	Shutdown(ctx context.Context) error
-	WithMux(mux *http.ServeMux) Server
+	WithMux(mux HTTPMux) Server
 	GetAddr() string
+}
+
+type HTTPMux interface {
+	HandleFunc(pattern string, fn http.HandlerFunc)
+	GetMux() *http.ServeMux
 }

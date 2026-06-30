@@ -11,30 +11,12 @@ import (
 	"github.com/n1k1x86/libs/http_server"
 )
 
-type h struct {
-	mux *http.ServeMux
-}
-
-func newH() *h {
-	return &h{
-		mux: http.NewServeMux(),
-	}
-}
-
-func (h *h) SetHandlerFunc(pattern string, fn http.HandlerFunc) {
-	h.mux.HandleFunc(pattern, fn)
-}
-
-func (h *h) GetMux() *http.ServeMux {
-	return h.mux
-}
-
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
 	defer cancel()
 
-	hs := newH()
-	hs.SetHandlerFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+	hs := http_server.NewMux()
+	hs.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("hello world"))
@@ -47,7 +29,7 @@ func main() {
 		WithWriteTimeout(time.Second * 5).
 		WithIdleTimeout(time.Second * 5)
 
-	s := http_server.NewHTTPServer(s_cfg).WithMux(hs.GetMux())
+	s := http_server.NewHTTPServer(s_cfg).WithMux(hs)
 
 	errChan := make(chan error, 1)
 
