@@ -14,5 +14,6 @@ type Server interface {
 
 type HTTPMux interface {
 	HandleFunc(pattern string, fn http.HandlerFunc)
+	Handle(patter string, fn http.Handler)
 	GetMux() *http.ServeMux
 }
