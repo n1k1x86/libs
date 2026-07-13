@@ -2,6 +2,8 @@ package http_server
 
 import "net/http"
 
+type Middleware func(next http.Handler) http.Handler
+
 type mux struct {
 	mux *http.ServeMux
 }
@@ -20,6 +22,14 @@ func (h *mux) Handle(pattern string, fn http.Handler) {
 	h.mux.Handle(pattern, fn)
 }
 
-func (h *mux) GetMux() *http.ServeMux {
-	return h.mux
+func (h *mux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.mux.ServeHTTP(w, r)
+}
+
+func (h *mux) Group(prefix string, middlewares ...Middleware) MiddlewareChain {
+	return &group{
+		mux:         h,
+		prefix:      prefix,
+		middlewares: middlewares,
+	}
 }

@@ -14,6 +14,12 @@ type Server interface {
 
 type HTTPMux interface {
 	HandleFunc(pattern string, fn http.HandlerFunc)
-	Handle(patter string, fn http.Handler)
-	GetMux() *http.ServeMux
+	Handle(pattern string, fn http.Handler)
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
+	Group(prefix string, middlewares ...Middleware) MiddlewareChain
+}
+
+type MiddlewareChain interface {
+	Handle(pattern string, handler http.Handler)
+	HandleFunc(pattern string, handleFunc http.HandlerFunc)
 }
