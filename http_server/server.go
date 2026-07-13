@@ -25,7 +25,7 @@ func NewHTTPServer(cfg HTTPServerConfig) Server {
 	}
 }
 
-func (s *httpServer) WithMux(mux HTTPMux) Server {
+func (s *httpServer) WithMux(mux http.Handler) Server {
 	s.s.Handler = mux
 	return s
 }

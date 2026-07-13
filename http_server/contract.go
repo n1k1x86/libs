@@ -8,7 +8,7 @@ import (
 type Server interface {
 	Start() error
 	Shutdown(ctx context.Context) error
-	WithMux(mux HTTPMux) Server
+	WithMux(mux http.Handler) Server
 	GetAddr() string
 }
 
